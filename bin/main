@@ -226,6 +226,7 @@ def _save_artifact(
         }).encode(),
     )
     resp_create = json.load(urllib.request.urlopen(req_create))
+    print(json.dumps(resp_create, indent=2))
 
     req_upload = urllib.request.Request(
         f'{resp_create["fileContainerResourceUrl"]}?itemPath={artifact_name}/data.json',  # noqa: E501
@@ -237,7 +238,8 @@ def _save_artifact(
         },
         data=contents,
     )
-    urllib.request.urlopen(req_upload)
+    resp = urllib.request.urlopen(req_upload)
+    print(json.dumps(json.load(resp), indent=2))
 
     req_finish = urllib.request.Request(
         f'{base_url}&artifactName={artifact_name}',
@@ -245,7 +247,8 @@ def _save_artifact(
         headers={**headers, 'Content-Type': 'application/json'},
         data=json.dumps({'size': len(contents)}).encode(),
     )
-    urllib.request.urlopen(req_finish)
+    resp = urllib.request.urlopen(req_finish)
+    print(json.dumps(json.load(resp), indent=2))
 
 
 def main(argv: Sequence[str] | None = None) -> int:
